@@ -1,0 +1,35 @@
+{
+  "name": "photo-album-manager",
+  "version": "1.0.0",
+  "description": "一个简洁优雅的照片管理应用，支持相册创建、照片组织和拖拽排序功能",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "lint": "eslint src --ext .js",
+    "lint:fix": "eslint src --ext .js --fix",
+    "format": "prettier --write src/**/*.{js,css,html}"
+  },
+  "keywords": [
+    "photo",
+    "album",
+    "management",
+    "vite",
+    "javascript",
+    "sqlite"
+  ],
+  "author": "Spec Kit Demo",
+  "license": "MIT",
+  "devDependencies": {
+    "vite": "^5.0.0",
+    "eslint": "^8.0.0",
+    "prettier": "^3.0.0"
+  },
+  "dependencies": {
+    "sql.js": "^1.8.0"
+  },
+  "engines": {
+    "node": ">=16.0.0"
+  }
+}

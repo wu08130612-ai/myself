@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>照片相册管理器</title>
+    <meta name="description" content="简洁优雅的照片管理应用，支持相册创建、照片组织和拖拽排序功能">
+    <link rel="stylesheet" href="/src/css/main.css">
+    <link rel="stylesheet" href="/src/css/album.css">
+    <link rel="stylesheet" href="/src/css/photo.css">
+</head>
+<body>
+    <div id="app">
+        <!-- 头部导航 -->
+        <header class="app-header">
+            <div class="header-content">
+                <h1 class="app-title">📸 照片相册管理器</h1>
+                <div class="header-actions">
+                    <button id="create-album-btn" class="btn btn-primary">
+                        <span class="btn-icon">➕</span>
+                        创建相册
+                    </button>
+                    <button id="import-photos-btn" class="btn btn-secondary">
+                        <span class="btn-icon">📁</span>
+                        导入照片
+                    </button>
+                </div>
+            </div>
+        </header>
+
+        <!-- 主内容区域 -->
+        <main class="main-content">
+            <!-- 相册网格视图 -->
+            <section id="albums-view" class="view-section active">
+                <div class="section-header">
+                    <h2>我的相册</h2>
+                    <div class="view-controls">
+                        <button id="sort-by-date" class="btn btn-ghost">按日期排序</button>
+                        <button id="sort-by-name" class="btn btn-ghost">按名称排序</button>
+                    </div>
+                </div>
+                <div id="albums-grid" class="albums-grid">
+                    <!-- 相册卡片将在这里动态生成 -->
+                </div>
+                <div id="empty-state" class="empty-state">
+                    <div class="empty-icon">📷</div>
+                    <h3>还没有相册</h3>
+                    <p>点击"创建相册"开始整理您的照片</p>
+                </div>
+            </section>
+
+            <!-- 相册详情视图 -->
+            <section id="album-detail-view" class="view-section">
+                <div class="section-header">
+                    <button id="back-to-albums" class="btn btn-ghost">
+                        <span class="btn-icon">←</span>
+                        返回相册
+                    </button>
+                    <h2 id="album-title">相册名称</h2>
+                    <div class="view-controls">
+                        <button id="add-photos-btn" class="btn btn-primary">
+                            <span class="btn-icon">➕</span>
+                            添加照片
+                        </button>
+                        <button id="delete-album-btn" class="btn btn-danger">
+                            <span class="btn-icon">🗑️</span>
+                            删除相册
+                        </button>
+                    </div>
+                </div>
+                <div id="photos-grid" class="photos-grid">
+                    <!-- 照片瓦片将在这里动态生成 -->
+                </div>
+                <div id="photos-empty-state" class="empty-state">
+                    <div class="empty-icon">🖼️</div>
+                    <h3>相册为空</h3>
+                    <p>点击"添加照片"开始添加您的照片</p>
+                </div>
+            </section>
+        </main>
+
+        <!-- 模态对话框 -->
+        <div id="modal-overlay" class="modal-overlay">
+            <!-- 创建相册对话框 -->
+            <div id="create-album-modal" class="modal">
+                <div class="modal-header">
+                    <h3>创建新相册</h3>
+                    <button class="modal-close">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <form id="create-album-form">
+                        <div class="form-group">
+                            <label for="album-name">相册名称</label>
+                            <input type="text" id="album-name" name="albumName" required 
+                                   placeholder="请输入相册名称" maxlength="50">
+                        </div>
+                        <div class="form-group">
+                            <label for="album-description">描述 (可选)</label>
+                            <textarea id="album-description" name="albumDescription" 
+                                      placeholder="为这个相册添加一些描述..." maxlength="200"></textarea>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-ghost modal-cancel">取消</button>
+                    <button type="submit" form="create-album-form" class="btn btn-primary">创建</button>
+                </div>
+            </div>
+
+            <!-- 照片预览对话框 -->
+            <div id="photo-preview-modal" class="modal modal-large">
+                <div class="modal-header">
+                    <h3 id="photo-title">照片预览</h3>
+                    <button class="modal-close">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <div class="photo-preview-container">
+                        <img id="preview-image" src="" alt="照片预览">
+                        <div class="photo-nav">
+                            <button id="prev-photo" class="btn btn-ghost">← 上一张</button>
+                            <button id="next-photo" class="btn btn-ghost">下一张 →</button>
+                        </div>
+                    </div>
+                    <div class="photo-info">
+                        <div class="info-item">
+                            <span class="info-label">文件名:</span>
+                            <span id="photo-filename">-</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">文件大小:</span>
+                            <span id="photo-filesize">-</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">拍摄时间:</span>
+                            <span id="photo-date">-</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 加载指示器 -->
+        <div id="loading-indicator" class="loading-indicator">
+            <div class="loading-spinner"></div>
+            <p>处理中...</p>
+        </div>
+
+        <!-- 通知消息 -->
+        <div id="notification-container" class="notification-container">
+            <!-- 通知消息将在这里动态生成 -->
+        </div>
+
+        <!-- 隐藏的文件输入 -->
+        <input type="file" id="photo-file-input" multiple accept="image/*" style="display: none;">
+    </div>
+
+    <!-- JavaScript 模块 -->
+    <script type="module" src="/src/js/main.js"></script>
+</body>
+</html>
