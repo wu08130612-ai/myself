@@ -1,0 +1,14 @@
+name: 测试项目
+description: 这是一个测试项目的描述
+tasks:
+  - id: task-1761578357389-esf5b2vja
+    title: 创建项目基础结构
+    description: 设置项目的基本文件夹结构和配置文件
+    status: pending
+    priority: low
+    dependencies: []
+    tags: []
+    createdAt: 2025-10-27T15:19:17.389Z
+    updatedAt: 2025-10-27T15:19:17.389Z
+createdAt: 2025-10-27T15:18:37.343Z
+updatedAt: 2025-10-27T15:19:17.389Z

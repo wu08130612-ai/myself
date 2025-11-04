@@ -1,0 +1,125 @@
+# Gemini CLI Enhancer 任务模板
+
+web_automation:
+  name: "网页自动化任务"
+  description: "使用浏览器控制功能完成网页操作"
+  tasks:
+    - id: "setup_browser"
+      title: "启动浏览器"
+      description: "初始化Playwright浏览器实例"
+      priority: "high"
+      status: "pending"
+      
+    - id: "navigate_page"
+      title: "导航到目标页面"
+      description: "访问指定的网页URL"
+      priority: "high"
+      status: "pending"
+      
+    - id: "interact_elements"
+      title: "与页面元素交互"
+      description: "点击、输入、选择页面元素"
+      priority: "medium"
+      status: "pending"
+      
+    - id: "extract_data"
+      title: "提取页面数据"
+      description: "获取页面内容、截图或其他信息"
+      priority: "medium"
+      status: "pending"
+
+mcp_troubleshooting:
+  name: "MCP连接故障排除"
+  description: "诊断和修复MCP工具连接问题"
+  tasks:
+    - id: "check_network"
+      title: "检查网络连接"
+      description: "验证网络连通性和DNS解析"
+      priority: "high"
+      status: "pending"
+      
+    - id: "verify_config"
+      title: "验证配置文件"
+      description: "检查settings.json配置是否正确"
+      priority: "high"
+      status: "pending"
+      
+    - id: "test_api_key"
+      title: "测试API密钥"
+      description: "验证API密钥的有效性"
+      priority: "high"
+      status: "pending"
+      
+    - id: "restart_service"
+      title: "重启服务"
+      description: "重启Gemini CLI和MCP服务"
+      priority: "medium"
+      status: "pending"
+
+development_workflow:
+  name: "规范驱动开发流程"
+  description: "基于规范的软件开发任务流程"
+  tasks:
+    - id: "analyze_requirements"
+      title: "需求分析"
+      description: "分析和理解项目需求"
+      priority: "high"
+      status: "pending"
+      
+    - id: "create_specification"
+      title: "创建规范文档"
+      description: "编写详细的技术规范"
+      priority: "high"
+      status: "pending"
+      
+    - id: "design_architecture"
+      title: "设计系统架构"
+      description: "设计系统的整体架构"
+      priority: "high"
+      status: "pending"
+      
+    - id: "implement_features"
+      title: "实现功能"
+      description: "根据规范实现具体功能"
+      priority: "medium"
+      status: "pending"
+      
+    - id: "write_tests"
+      title: "编写测试"
+      description: "创建单元测试和集成测试"
+      priority: "medium"
+      status: "pending"
+      
+    - id: "review_code"
+      title: "代码审查"
+      description: "进行代码质量审查"
+      priority: "medium"
+      status: "pending"
+
+data_processing:
+  name: "数据处理任务"
+  description: "数据收集、处理和分析任务"
+  tasks:
+    - id: "collect_data"
+      title: "数据收集"
+      description: "从各种源收集数据"
+      priority: "high"
+      status: "pending"
+      
+    - id: "clean_data"
+      title: "数据清洗"
+      description: "清理和标准化数据"
+      priority: "high"
+      status: "pending"
+      
+    - id: "analyze_data"
+      title: "数据分析"
+      description: "分析数据并提取洞察"
+      priority: "medium"
+      status: "pending"
+      
+    - id: "generate_report"
+      title: "生成报告"
+      description: "创建数据分析报告"
+      priority: "medium"
+      status: "pending"
