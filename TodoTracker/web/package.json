@@ -10,6 +10,11 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@capacitor/cli": "^7.4.4",
+    "@capacitor/core": "^7.4.4",
+    "@capacitor/ios": "^7.4.4",
+    "@capacitor/local-notifications": "^7.0.3",
+    "@capacitor/preferences": "^7.0.2",
     "@types/zxcvbn": "^4.4.5",
     "react": "^19.1.1",
     "react-dom": "^19.1.1",

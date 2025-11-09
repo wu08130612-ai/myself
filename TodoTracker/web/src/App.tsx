@@ -3,7 +3,7 @@ import './index.css'
 import { Link } from 'react-router-dom'
 import BackgroundContainer from './components/BackgroundContainer'
 import GlareHover from './components/reactbits/GlareHover'
-import type { Task } from './lib/api'
+import type { Task } from './lib/api_hybrid'
 import {
   getHealth,
   getTasks,
@@ -14,7 +14,7 @@ import {
   getCategories,
   getStreak,
   uncompleteTask,
-} from './lib/api'
+} from './lib/api_hybrid'
 import { scheduleForTask, cancelForTask, requestPermission, permissionStatus } from './lib/notifications'
 
 function Stamp({ status }: { status: Task['status'] }) {
