@@ -19,6 +19,7 @@ import JoinFamily from './pages/JoinFamily'
 import FloatingFab from './components/FloatingFab'
 import NewItemPicker from './modals/NewItemPicker'
 import CreateChoreForm from './modals/CreateChoreForm'
+import StartupAnimation from './components/StartupAnimation'
 
 // 简单线性图标（与底部导航搭配）
 const IconHome = (
@@ -73,6 +74,8 @@ export default function AppRouter() {
   const [createChoreOpen, setCreateChoreOpen] = React.useState(false)
   return (
     <BrowserRouter>
+      {/* 首次启动品牌动画（仅展示一次），覆盖所有页面 */}
+      <StartupAnimation />
       <PillNav
         items={isLoggedIn()
           ? [

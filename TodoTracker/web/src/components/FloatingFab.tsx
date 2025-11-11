@@ -1,4 +1,4 @@
-import React from 'react'
+// React 17+ 自动 JSX 运行时无需显式引入 React
 
 type Props = { onClick?: () => void }
 

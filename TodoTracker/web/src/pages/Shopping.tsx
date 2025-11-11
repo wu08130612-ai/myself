@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import BackgroundContainer from '../components/BackgroundContainer'
 
 type Item = { name: string; category?: string; done?: boolean }
@@ -27,7 +27,7 @@ export default function Shopping() {
   }, [items])
 
   function toggleItem(idx: number, inKey: string) {
-    const flatIndex = items.findIndex((it, i) => it === grouped.find(([k]) => k === inKey)?.[1][idx])
+    const flatIndex = items.findIndex((it) => it === grouped.find(([k]) => k === inKey)?.[1][idx])
     if (flatIndex < 0) return
     const next = [...items]
     next[flatIndex] = { ...next[flatIndex], done: !next[flatIndex].done }
