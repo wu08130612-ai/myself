@@ -10,7 +10,13 @@ type BackgroundContainerProps = {
 
 export default function BackgroundContainer({ children, variant = 'aurora', colorStops }: BackgroundContainerProps) {
   return (
-    <div className="relative min-h-screen bg-gradient-to-b from-slate-950 via-slate-900 to-slate-950 text-slate-100">
+    <div
+      className="relative bg-gradient-to-b from-slate-950 via-slate-900 to-slate-950 text-slate-100"
+      style={{
+        // 使用 100dvh 适配 iOS 动态视窗高度
+        minHeight: '100dvh',
+      }}
+    >
       {variant === 'aurora' && <Aurora colorStops={colorStops} />}
       {variant === 'liquidEther' && (
         <LiquidEther colors={['#5227FF', '#FF9FFC', '#B19EEF']} resolution={0.5} autoDemo={true} />

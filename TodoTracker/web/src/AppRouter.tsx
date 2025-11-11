@@ -1,15 +1,24 @@
 import React from 'react'
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
-import App from './App.tsx'
-import Login from './pages/Login.tsx'
-import Settings from './pages/Settings.tsx'
-import Register from './pages/Register.tsx'
-import Privacy from './pages/legal/Privacy.tsx'
-import Terms from './pages/legal/Terms.tsx'
-import { isLoggedIn } from './lib/session.ts'
-import PillNav from './components/PillNav.tsx'
+import App from './App'
+import Login from './pages/Login'
+import Settings from './pages/Settings'
+import Register from './pages/Register'
+import Privacy from './pages/legal/Privacy'
+import Terms from './pages/legal/Terms'
+import { isLoggedIn } from './lib/session'
+import PillNav from './components/PillNav'
 import Archive from './pages/Archive'
 import Me from './pages/Me'
+import Hub from './pages/Hub'
+import Shopping from './pages/Shopping'
+import Members from './pages/Members'
+import Onboarding from './pages/Onboarding'
+import CreateFamily from './pages/CreateFamily'
+import JoinFamily from './pages/JoinFamily'
+import FloatingFab from './components/FloatingFab'
+import NewItemPicker from './modals/NewItemPicker'
+import CreateChoreForm from './modals/CreateChoreForm'
 
 // 简单线性图标（与底部导航搭配）
 const IconHome = (
@@ -60,18 +69,21 @@ function RedirectIfAuthed({ children }: { children: React.ReactNode }) {
 }
 
 export default function AppRouter() {
+  const [pickerOpen, setPickerOpen] = React.useState(false)
+  const [createChoreOpen, setCreateChoreOpen] = React.useState(false)
   return (
     <BrowserRouter>
       <PillNav
         items={isLoggedIn()
           ? [
-              { label: '主页', href: '/app', icon: IconHome },
-              { label: '归档', href: '/archive', icon: IconBox },
-              { label: '我的', href: '/me', icon: IconUser },
+              { label: '仪表盘', href: '/hub', icon: IconHome },
+              { label: '家务', href: '/chores', icon: IconBox },
+              { label: '购物', href: '/shopping', icon: IconBox },
+              { label: '成员', href: '/members', icon: IconUser },
               { label: '设置', href: '/settings', icon: IconGear },
             ]
           : [
-              { label: '主页', href: '/app', icon: IconHome },
+              { label: '仪表盘', href: '/hub', icon: IconHome },
               { label: '登录', href: '/login', icon: IconUser },
               { label: '注册', href: '/register', icon: IconBox },
               { label: '设置', href: '/settings', icon: IconGear },
@@ -87,12 +99,27 @@ export default function AppRouter() {
         electricChaos={0.5}
         electricSpeed={1}
       />
-      <div style={{ paddingBottom: 90 }}>
+      {isLoggedIn() && (
+        <FloatingFab onClick={() => setPickerOpen(true)} />
+      )}
+      <div style={{
+        // 为内容区域加入底部安全区，避免与固定底部导航重叠
+        paddingBottom: 'calc(90px + env(safe-area-inset-bottom))',
+        // 顶部安全区，避免标题被刘海遮挡
+        paddingTop: 'env(safe-area-inset-top)'
+      }}>
         <Routes>
+          <Route path="/onboarding" element={<RedirectIfAuthed><Onboarding /></RedirectIfAuthed>} />
+          <Route path="/create-family" element={<RedirectIfAuthed><CreateFamily /></RedirectIfAuthed>} />
+          <Route path="/join-family" element={<RedirectIfAuthed><JoinFamily /></RedirectIfAuthed>} />
           <Route path="/login" element={<RedirectIfAuthed><Login /></RedirectIfAuthed>} />
           <Route path="/register" element={<RedirectIfAuthed><Register /></RedirectIfAuthed>} />
           <Route path="/legal/privacy" element={<Privacy />} />
           <Route path="/legal/terms" element={<Terms />} />
+          <Route path="/hub" element={<RequireAuth><Hub /></RequireAuth>} />
+          <Route path="/chores" element={<RequireAuth><App /></RequireAuth>} />
+          <Route path="/shopping" element={<RequireAuth><Shopping /></RequireAuth>} />
+          <Route path="/members" element={<RequireAuth><Members /></RequireAuth>} />
           <Route
             path="/app"
             element={
@@ -125,9 +152,23 @@ export default function AppRouter() {
               </RequireAuth>
             }
           />
-          <Route path="*" element={<Navigate to={isLoggedIn() ? '/app' : '/login'} replace />} />
+          <Route path="*" element={<Navigate to={isLoggedIn() ? '/hub' : '/login'} replace />} />
         </Routes>
       </div>
+      <NewItemPicker
+        open={pickerOpen}
+        onClose={() => setPickerOpen(false)}
+        onPick={(type) => {
+          setPickerOpen(false)
+          if (type === 'chore') setCreateChoreOpen(true)
+          // 购物项创建暂为占位，稍后打开对应模态
+        }}
+      />
+      <CreateChoreForm
+        open={createChoreOpen}
+        onClose={() => setCreateChoreOpen(false)}
+        onCreated={() => setCreateChoreOpen(false)}
+      />
     </BrowserRouter>
   )
 }

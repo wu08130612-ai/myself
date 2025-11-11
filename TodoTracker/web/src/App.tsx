@@ -15,7 +15,7 @@ import {
   getStreak,
   uncompleteTask,
 } from './lib/api_hybrid'
-import { scheduleForTask, cancelForTask, requestPermission, permissionStatus } from './lib/notifications'
+import { scheduleForTask, cancelForTask, requestPermission, permissionStatus, isNativePlatform } from './lib/notifications'
 
 function Stamp({ status }: { status: Task['status'] }) {
   return <span title={status}>{status === '已完成' ? '✅' : '⏳'}</span>
@@ -56,7 +56,8 @@ export default function App() {
       setCategories(cats)
       setStreak(st)
       // 为所有未完成且有截止时间的任务调度提醒（包含预提醒）
-      if (permissionStatus() === 'granted') {
+      // 原生平台不依赖 Web Notification 权限判断
+      if (permissionStatus() === 'granted' || isNativePlatform()) {
         list.forEach((t) => {
           if (t.status === '未完成' && t.due_date) {
             scheduleForTask({ id: t.id, title: t.title, due_date: t.due_date }, { preRemind: true })

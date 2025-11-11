@@ -1,6 +1,9 @@
 // 通知封装：
 // - Web：用 Notification + setTimeout 模拟到期提醒（页面打开期间有效）
-// - 原生(iOS/Android, Capacitor)：使用 Local Notifications 插件（存在才调用）
+// - 原生(iOS/Android, Capacitor)：显式使用 @capacitor/local-notifications 插件
+
+import { LocalNotifications } from '@capacitor/local-notifications'
+import { Capacitor } from '@capacitor/core'
 
 export type TaskLike = {
   id: number
@@ -14,19 +17,11 @@ type ScheduleOptions = {
 
 const timersByTask: Record<number, number[]> = {}
 
-function isNativePlatform(): boolean {
-  const c = (globalThis as any).Capacitor
-  return !!c && typeof c.isNativePlatform === 'function' && c.isNativePlatform()
-}
-
-function withLocalNotifications<T>(fn: (ln: any) => T): T | null {
-  const c = (globalThis as any).Capacitor
-  const ln = (globalThis as any).LocalNotifications || c?.Plugins?.LocalNotifications || c?.LocalNotifications
-  if (!ln) return null
+export function isNativePlatform(): boolean {
   try {
-    return fn(ln)
+    return typeof Capacitor?.isNativePlatform === 'function' ? Capacitor.isNativePlatform() : false
   } catch {
-    return null
+    return false
   }
 }
 
@@ -48,25 +43,12 @@ export function permissionStatus(): NotificationPermission | 'unsupported' {
 export async function requestPermission(): Promise<boolean> {
   // 原生平台优先尝试插件授权
   if (isNativePlatform()) {
-    const ok = withLocalNotifications((ln) => {
-      const res = ln.requestPermissions ? ln.requestPermissions() : null
-      // 兼容返回 Promise 或直接对象
-      if (res && typeof res.then === 'function') {
-        return (res as Promise<any>).then((r) => ((r?.display || r?.results?.display) === 'granted')).catch(() => false) as unknown as boolean
-      }
-      return ((res?.display || res?.results?.display) === 'granted') as boolean
-    })
-    if (ok !== null) {
-      // 若返回为 Promise，则等待其结果
-      if (typeof (ok as any)?.then === 'function') {
-        try {
-          const r = await (ok as any)
-          return !!r
-        } catch {
-          return false
-        }
-      }
-      return !!ok
+    try {
+      const res: any = await LocalNotifications.requestPermissions()
+      const display = res?.display ?? res?.results?.display
+      return display === 'granted'
+    } catch {
+      return false
     }
   }
 
@@ -85,10 +67,12 @@ export async function requestPermission(): Promise<boolean> {
 function notifyNow(title: string, body: string) {
   // 原生立即通知
   if (isNativePlatform()) {
-    const r = withLocalNotifications((ln) => ln.schedule?.({ notifications: [{ id: Math.floor(Date.now() % 1000000), title, body }] }))
-    if (r && typeof (r as any).then === 'function') {
-      ;(r as any).catch(() => {})
-    }
+    try {
+      // 使用插件进行一次立即通知
+      void LocalNotifications.schedule({
+        notifications: [{ id: Math.floor(Date.now() % 1000000), title, body }],
+      })
+    } catch {}
     return
   }
   // Web 通知
@@ -134,10 +118,9 @@ export function scheduleForTask(task: TaskLike, opts: ScheduleOptions = {}) {
       notifs.push({ id: idPre, title: '待办预提醒', body: `距任务「${task.title}」截止还有 1 小时`, schedule: { at: new Date(due.getTime() - 60 * 60 * 1000) } })
     }
     notifs.push({ id: idMain, title: '待办到期', body: `任务「${task.title}」已到截止时间`, schedule: { at: new Date(due.getTime()) } })
-    const r = withLocalNotifications((ln) => ln.schedule?.({ notifications: notifs }))
-    if (r && typeof (r as any).then === 'function') {
-      ;(r as any).catch(() => {})
-    }
+    try {
+      void LocalNotifications.schedule({ notifications: notifs })
+    } catch {}
   }
 }
 
@@ -149,9 +132,8 @@ export function cancelForTask(taskId: number) {
   if (isNativePlatform()) {
     const idPre = taskId * 1000 + 1
     const idMain = taskId * 1000 + 2
-    const r = withLocalNotifications((ln) => ln.cancel?.({ notifications: [{ id: idPre }, { id: idMain }] }))
-    if (r && typeof (r as any).then === 'function') {
-      ;(r as any).catch(() => {})
-    }
+    try {
+      void LocalNotifications.cancel({ notifications: [{ id: idPre }, { id: idMain }] })
+    } catch {}
   }
 }

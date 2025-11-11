@@ -83,8 +83,27 @@ export default function PillNav({
   const transition = useMemo(() => `transform 320ms ${easeToBezier(ease)}, width 320ms ${easeToBezier(ease)}`,[ease])
 
   return (
-    <div className={className} style={{ position: 'fixed', bottom: 0, left: 0, right: 0, zIndex: 20, backdropFilter: 'saturate(180%) blur(8px)', background: 'rgba(2,6,23,0.35)' }}>
-      <nav ref={containerRef} role="navigation" aria-label="主导航" className="mx-auto max-w-[960px] px-3 py-4" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+    <div
+      className={className}
+      style={{
+        position: 'fixed',
+        bottom: 0,
+        left: 0,
+        right: 0,
+        zIndex: 20,
+        backdropFilter: 'saturate(180%) blur(8px)',
+        background: 'rgba(2,6,23,0.35)',
+        // 关键：为底部加入安全区，避免与 Home 指示器重叠
+        paddingBottom: 'env(safe-area-inset-bottom)'
+      }}
+    >
+      <nav
+        ref={containerRef}
+        role="navigation"
+        aria-label="主导航"
+        className="mx-auto max-w-[960px] px-3 py-4"
+        style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+      >
         <ElectricBorder color={electricColor} thickness={electricThickness} chaos={electricChaos} speed={electricSpeed} borderRadius={9999}>
           <div className="relative" style={{ display: 'flex', gap: 12, alignItems: 'center', padding: 8, borderRadius: 9999, background: baseColor }}>
             {/* 活动胶囊（按需显示） */}
