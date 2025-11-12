@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import BackgroundContainer from '../components/BackgroundContainer'
 import { useNavigate } from 'react-router-dom'
+import { setSession } from '../lib/session'
 
 export default function CreateFamily() {
   const [name, setName] = useState('')
@@ -12,6 +13,8 @@ export default function CreateFamily() {
     if (!name.trim()) return
     const family = { name: name.trim(), color, createdAt: Date.now() }
     localStorage.setItem('tt_family', JSON.stringify(family))
+    // 创建/加入家庭后，写入访客会话以直达主应用体验
+    setSession('guest@local')
     nav('/hub')
   }
 

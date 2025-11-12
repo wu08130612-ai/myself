@@ -16,9 +16,6 @@ import Members from './pages/Members'
 import Onboarding from './pages/Onboarding'
 import CreateFamily from './pages/CreateFamily'
 import JoinFamily from './pages/JoinFamily'
-import FloatingFab from './components/FloatingFab'
-import NewItemPicker from './modals/NewItemPicker'
-import CreateChoreForm from './modals/CreateChoreForm'
 import StartupAnimation from './components/StartupAnimation'
 
 // 简单线性图标（与底部导航搭配）
@@ -70,8 +67,6 @@ function RedirectIfAuthed({ children }: { children: React.ReactNode }) {
 }
 
 export default function AppRouter() {
-  const [pickerOpen, setPickerOpen] = React.useState(false)
-  const [createChoreOpen, setCreateChoreOpen] = React.useState(false)
   return (
     <BrowserRouter>
       {/* 首次启动品牌动画（仅展示一次），覆盖所有页面 */}
@@ -102,9 +97,6 @@ export default function AppRouter() {
         electricChaos={0.5}
         electricSpeed={1}
       />
-      {isLoggedIn() && (
-        <FloatingFab onClick={() => setPickerOpen(true)} />
-      )}
       <div style={{
         // 为内容区域加入底部安全区，避免与固定底部导航重叠
         paddingBottom: 'calc(90px + env(safe-area-inset-bottom))',
@@ -158,20 +150,6 @@ export default function AppRouter() {
           <Route path="*" element={<Navigate to={isLoggedIn() ? '/hub' : '/login'} replace />} />
         </Routes>
       </div>
-      <NewItemPicker
-        open={pickerOpen}
-        onClose={() => setPickerOpen(false)}
-        onPick={(type) => {
-          setPickerOpen(false)
-          if (type === 'chore') setCreateChoreOpen(true)
-          // 购物项创建暂为占位，稍后打开对应模态
-        }}
-      />
-      <CreateChoreForm
-        open={createChoreOpen}
-        onClose={() => setCreateChoreOpen(false)}
-        onCreated={() => setCreateChoreOpen(false)}
-      />
     </BrowserRouter>
   )
 }

@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import BackgroundContainer from '../components/BackgroundContainer'
 import { useNavigate } from 'react-router-dom'
+import { setSession } from '../lib/session'
 
 export default function JoinFamily() {
   const [code, setCode] = useState('')
@@ -11,6 +12,8 @@ export default function JoinFamily() {
     if (!code.trim()) return
     const joinInfo = { invite: code.trim(), joinedAt: Date.now() }
     localStorage.setItem('tt_family_join', JSON.stringify(joinInfo))
+    // 加入家庭后，写入访客会话，入口直达主应用
+    setSession('guest@local')
     nav('/hub')
   }
 
