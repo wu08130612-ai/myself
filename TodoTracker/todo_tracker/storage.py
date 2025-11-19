@@ -60,7 +60,14 @@ def list_tasks(search: Optional[str] = None, category: Optional[str] = None) -> 
         params.append(category)
     if conds:
         q += " WHERE " + " AND ".join(conds)
-    q += " ORDER BY status='未完成' DESC, priority DESC, due_date IS NOT NULL DESC, due_date ASC NULLS LAST, created_at DESC"
+    q += (
+        " ORDER BY "
+        "status='未完成' DESC, "
+        "CASE priority WHEN '高' THEN 3 WHEN '中' THEN 2 WHEN '低' THEN 1 ELSE 0 END DESC, "
+        "CASE WHEN due_date IS NULL THEN 1 ELSE 0 END, "
+        "due_date ASC, "
+        "created_at DESC"
+    )
     rows = conn.execute(q, params).fetchall()
     conn.close()
     return [_row_to_task(r) for r in rows]

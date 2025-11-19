@@ -58,6 +58,15 @@ def _momentum_bar(created_at: str, due_date: Optional[str]) -> str:
     return "█" * filled + "░" * empty
 
 
+def _normalize_priority(value: Optional[str], *, allow_empty: bool) -> Optional[str]:
+    if value is None:
+        return None if allow_empty else "中"
+    cleaned = value.strip()
+    if not cleaned:
+        return None if allow_empty else "中"
+    return cleaned if cleaned in PRIORITY_SET else "中"
+
+
 class TaskItem(ListItem):
     def __init__(self, task):
         super().__init__()
@@ -187,11 +196,12 @@ class TodoApp(App):
     def _add_cb(self, data: dict) -> None:
         if not data or not data.get("title"):
             return
+        priority = _normalize_priority(data.get("priority"), allow_empty=False)
         add_task(
             title=data["title"],
             description=data.get("description", ""),
             category=data.get("category", ""),
-            priority=data.get("priority", "中"),
+            priority=priority if priority is not None else "中",
             due_date=data.get("due_date"),
         )
         self.refresh_list()
@@ -225,12 +235,13 @@ class TodoApp(App):
     def _edit_cb(self, task_id: int, data: dict) -> None:
         if not data:
             return
+        priority = _normalize_priority(data.get("priority"), allow_empty=True)
         update_task(
             task_id,
             title=data.get("title"),
             description=data.get("description"),
             category=data.get("category"),
-            priority=data.get("priority"),
+            priority=priority,
             due_date=data.get("due_date"),
         )
         self.refresh_list()
